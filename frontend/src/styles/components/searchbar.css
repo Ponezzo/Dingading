@@ -1,0 +1,23 @@
+.searchbar {
+  /* border: 5px solid black; */
+  background-color: white;
+  display: flex;
+  flex-direction: row;
+  /* margin: 1rem; */
+  padding: 0.5rem;
+  border-radius: 5px;
+  gap: 1rem;
+}
+
+.text-area {
+  /* border: 5px solid green; */
+  display: flex;
+  border: none;
+  width: 100%;
+}
+
+.icon {
+  /* border: 5px solid green; */
+  width: 36px;
+  height: 36px;
+}

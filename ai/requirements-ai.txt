@@ -1,0 +1,15 @@
+# ML / DL
+torch==2.6.0
+openl3==0.4.2
+
+# analysis
+audioread==3.0.1
+resampy==0.2.2
+pydub==0.25.1
+soxr==0.5.0.post1
+kapre==0.3.7
+
+# math
+scikit-learn==1.6.1
+dtw==1.4.0
+tqdm==4.67.1

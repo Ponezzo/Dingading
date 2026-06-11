@@ -1,0 +1,893 @@
+openapi: 3.0.0
+info:
+  title: 딩가딩 Band API
+  version: 1.0.0
+  description: "밴드 API 명세서"
+  contact:
+    email: nykim.ssafy2024@gmail.com
+
+servers:
+  - url: http://localhost:8080
+    description: 스프링 서버
+  - url: http://localhost:8081
+    description: 목 서버
+
+tags:
+  - name: Band
+    description: 밴드 관리 관련 API - 개발 완료
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: "JWT 인증 토큰을 사용합니다. 예: Bearer {token}"
+
+  parameters:
+    # 경로 파라미터 모음
+    BandId:
+      name: bandId
+      in: path
+      description: "밴드 ID"
+      required: true
+      schema:
+        type: integer
+        format: int64
+
+    MemberId:
+      name: memberId
+      in: path
+      description: "회원 ID"
+      required: true
+      schema:
+        type: string
+        format: uuid
+
+    ContactId:
+      name: contactId
+      in: path
+      description: "연락처 ID"
+      required: true
+      schema:
+        type: integer
+        format: int64
+
+    # 쿼리 파라미터 모음
+    SearchParam:
+      name: keyword
+      in: query
+      description: "검색 키워드"
+      required: false
+      schema:
+        type: string
+
+    SigunParam:
+      name: sigun
+      in: query
+      description: "지역(시군)"
+      required: false
+      schema:
+        type: string
+
+    GenreParam:
+      name: genre
+      in: query
+      description: "장르"
+      required: false
+      schema:
+        $ref: "#/components/schemas/Genre"
+
+    JobOpeningParam:
+      name: jobOpening
+      in: query
+      description: "구인 여부"
+      required: false
+      schema:
+        type: boolean
+
+  schemas:
+    # 공통 기본 스키마
+    BaseEntityDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: "고유 식별자"
+
+    UuidEntityDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: "고유 식별자 (UUID)"
+
+    # 에러 응답 스키마
+    ProblemDetail:
+      type: object
+      properties:
+        type:
+          type: string
+        title:
+          type: string
+        status:
+          type: integer
+        detail:
+          type: string
+        instance:
+          type: string
+
+    # 열거형 정의
+    Instrument:
+      type: string
+      enum: [VOCAL, GUITAR, DRUM, BASS]
+      description: "악기 유형"
+
+    Genre:
+      type: string
+      enum: [HARDROCK, PSYCHEDELIC, ELECTRONICPOP, SYNTHPOP, FUNK, SURFROCK, JAZZ, DANCE, HIPHOP, POP]
+      description: "밴드 장르"
+
+    Sns:
+      type: string
+      enum: [GITHUB, MATTERMOST, INSTAGRAM, FACEBOOK, YOUTUBE, X, CUSTOM]
+      description: "SNS 유형"
+
+    # 페이지네이션 관련 스키마
+    PageableDTO:
+      type: object
+      properties:
+        page:
+          type: integer
+          description: 현재 페이지 번호
+        size:
+          type: integer
+          description: 페이지 크기
+        totalElements:
+          type: integer
+          description: 전체 요소 수
+        totalPages:
+          type: integer
+          description: 전체 페이지 수
+      required:
+        - page
+        - size
+        - totalElements
+        - totalPages
+
+    # 악기 보유 현황을 나타내는 스키마
+    InstrumentAvailabilityDTO:
+      type: object
+      properties:
+        VOCAL:
+          type: boolean
+          description: "보컬 악기 담당자 존재 여부"
+        GUITAR:
+          type: boolean
+          description: "기타 악기 담당자 존재 여부"
+        DRUM:
+          type: boolean
+          description: "드럼 악기 담당자 존재 여부"
+        BASS:
+          type: boolean
+          description: "베이스 악기 담당자 존재 여부"
+
+    # 기본 DTO 스키마
+    BandDTO:
+      type: object
+      properties:
+        bandId:
+          type: integer
+          format: int64
+          description: "밴드 ID"
+        name:
+          type: string
+          description: "밴드 이름"
+        bandMasterId:
+          type: string
+          format: uuid
+          description: "밴드 마스터 ID"
+        description:
+          type: string
+          description: "밴드 소개"
+        genres:
+          type: array
+          items:
+            $ref: "#/components/schemas/Genre"
+          description: "밴드 장르 목록"
+        sigun:
+          type: string
+          description: "활동 지역(시군)"
+        tags:
+          type: string
+          description: "태그 목록"
+        profileUrl:
+          type: string
+          description: "프로필 이미지 URL"
+        maxSize:
+          type: integer
+          description: "최대 인원 수"
+        jobOpening:
+          type: boolean
+          description: "구인 여부"
+        memberCount:
+          type: integer
+          description: "현재 멤버 수"
+        instrumentAvailability:
+          $ref: "#/components/schemas/InstrumentAvailabilityDTO"
+          description: "악기별 담당자 존재 여부"
+        contact:
+          type: array
+          items:
+            $ref: "#/components/schemas/ContactDTO"
+        bandMember:
+          type: array
+          items:
+            $ref: "#/components/schemas/BandMemberDTO"
+      required:
+        - bandId
+        - name
+        - bandMasterId
+        - genres
+
+    BandResponseDTO:
+      type: object
+      properties:
+        bandId:
+          type: integer
+          format: int64
+          description: "밴드 ID"
+        name:
+          type: string
+          description: "밴드 이름"
+        bandMasterId:
+          type: string
+          format: uuid
+          description: "밴드 마스터 ID"
+        description:
+          type: string
+          description: "밴드 소개"
+        genres:
+          type: array
+          items:
+            $ref: "#/components/schemas/Genre"
+          description: "밴드 장르 목록"
+        sigun:
+          type: string
+          description: "활동 지역(시군)"
+        tags:
+          type: string
+          description: "태그 목록"
+        profileUrl:
+          type: string
+          description: "프로필 이미지 URL"
+        maxSize:
+          type: integer
+          description: "최대 인원 수"
+        jobOpening:
+          type: boolean
+          description: "구인 여부"
+        instrumentAvailability:
+          $ref: "#/components/schemas/InstrumentAvailabilityDTO"
+          description: "악기별 담당자 존재 여부"
+        bandMember:
+          type: array
+          items:
+            $ref: "#/components/schemas/BandMemberDTO"
+        contact:
+          type: array
+          items:
+            $ref: "#/components/schemas/ContactDTO"
+      required:
+        - bandId
+        - name
+        - bandMasterId
+        - genres
+
+    BandMemberDTO:
+      type: object
+      properties:
+        bandMemberId:
+          type: integer
+          format: int64
+          description: "밴드 멤버 ID"
+        bandId:
+          type: integer
+          format: int64
+          description: "밴드 ID"
+        memberId:
+          type: string
+          format: uuid
+          description: "회원 ID"
+        instrument:
+          $ref: "#/components/schemas/Instrument"
+        profileUrl:
+          type: string
+          description: "프로필 이미지 URL"
+      required:
+        - bandMemberId
+        - bandId
+        - memberId
+        - instrument
+
+    ContactDTO:
+      type: object
+      properties:
+        contactId:
+          type: integer
+          format: int64
+          description: "연락처 ID"
+        bandId:
+          type: integer
+          format: int64
+          description: "밴드 ID"
+        sns:
+          $ref: "#/components/schemas/Sns"
+        title:
+          type: string
+          description: "Custom SNS 제목 (CUSTOM 유형인 경우에만)"
+        url:
+          type: string
+          description: "연락처 URL"
+      required:
+        - contactId
+        - bandId
+        - sns
+        - url
+
+    # 페이지네이션된 응답 스키마
+    PageBandDTO:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/BandDTO"
+        pageable:
+          $ref: "#/components/schemas/PageableDTO"
+      required:
+        - content
+        - pageable
+
+  # 요청 본문 정의
+  requestBodies:
+    CreateBandRequest:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                description: "밴드 이름"
+              description:
+                type: string
+                description: "밴드 소개"
+              genres:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Genre"
+                description: "밴드 장르 목록"
+              sigun:
+                type: string
+                description: "활동 지역(시군)"
+              tags:
+                type: string
+                description: "태그 목록"
+              profileUrl:
+                type: string
+                description: "프로필 이미지 URL"
+              maxSize:
+                type: integer
+                description: "최대 인원 수"
+              jobOpening:
+                type: boolean
+                description: "구인 여부"
+              bandMember:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BandMemberDTO"
+            required:
+              - name
+              - bandMasterId
+              - genres
+
+    UpdateBandRequest:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                description: "밴드 이름"
+              description:
+                type: string
+                description: "밴드 소개"
+              genres:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Genre"
+                description: "밴드 장르 목록"
+              sigun:
+                type: string
+                description: "활동 지역(시군)"
+              tags:
+                type: string
+                description: "태그 목록"
+              profileUrl:
+                type: string
+                description: "프로필 이미지 URL"
+              maxSize:
+                type: integer
+                description: "최대 인원 수"
+              jobOpening:
+                type: boolean
+                description: "구인 여부"
+            required:
+              - name
+
+    AddBandMemberRequest:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              memberId:
+                type: string
+                format: uuid
+                description: "추가할 회원 ID"
+              instrument:
+                $ref: "#/components/schemas/Instrument"
+            required:
+              - memberId
+              - instrument
+
+    UpdateBandMemberInstrumentRequest:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              instrument:
+                $ref: "#/components/schemas/Instrument"
+            required:
+              - instrument
+
+    TransferBandMasterRequest:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              newMasterId:
+                type: string
+                format: uuid
+                description: "새로운 밴드 마스터 ID"
+            required:
+              - newMasterId
+
+    CreateContactRequest:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              sns:
+                $ref: "#/components/schemas/Sns"
+              title:
+                type: string
+                description: "Custom SNS 제목 (CUSTOM 유형인 경우에만)"
+              url:
+                type: string
+                description: "연락처 URL"
+            required:
+              - sns
+              - url
+
+    UpdateContactRequest:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              sns:
+                $ref: "#/components/schemas/Sns"
+              title:
+                type: string
+                description: "Custom SNS 제목 (CUSTOM 유형인 경우에만)"
+              url:
+                type: string
+                description: "연락처 URL"
+            required:
+              - sns
+              - url
+
+  # 응답 정의
+  responses:
+    # 성공 응답
+    SuccessNoContent:
+      description: "성공적으로 처리되었습니다"
+      content: {}
+
+    SuccessCreated:
+      description: "성공적으로 생성되었습니다"
+
+    # 에러 응답
+    NotFoundException:
+      description: "요청한 리소스를 찾을 수 없습니다."
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/ProblemDetail"
+              - type: object
+                properties:
+                  title:
+                    type: string
+                    example: "리소스를 찾을 수 없습니다."
+
+    BadRequestException:
+      description: "잘못된 요청입니다."
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/ProblemDetail"
+              - type: object
+                properties:
+                  title:
+                    type: string
+                    example: "잘못된 요청입니다."
+
+    UnauthorizedException:
+      description: "인증되지 않은 요청입니다."
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/ProblemDetail"
+              - type: object
+                properties:
+                  title:
+                    type: string
+                    example: "인증되지 않은 요청입니다."
+
+    ForbiddenException:
+      description: "접근 권한이 없습니다."
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/ProblemDetail"
+              - type: object
+                properties:
+                  title:
+                    type: string
+                    example: "접근 권한이 없습니다."
+
+    # 비즈니스 응답
+    BandResponse:
+      description: "밴드 정보"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/BandDTO"
+
+    BandListResponse:
+      description: "밴드 목록"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/PageBandDTO"
+
+    BandMemberResponse:
+      description: "밴드 멤버 정보"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/BandMemberDTO"
+
+    BandMemberListResponse:
+      description: "밴드 멤버 목록"
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "#/components/schemas/BandMemberDTO"
+
+    ContactResponse:
+      description: "연락처 정보"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ContactDTO"
+
+    ContactListResponse:
+      description: "연락처 목록"
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "#/components/schemas/ContactDTO"
+
+security:
+  - BearerAuth: []
+
+paths:
+  /api/bands/{bandId}:
+    get:
+      tags:
+        - Band
+      operationId: getBand
+      summary: "밴드 정보 조회"
+      description: "밴드 정보를 조회합니다. 이름, 설명, 장르, 태그, 프로필 이미지 등 기본 정보 포함"
+      parameters:
+        - $ref: "#/components/parameters/BandId"
+      responses:
+        "200":
+          $ref: "#/components/responses/BandResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundException"
+
+    patch:
+      tags:
+        - Band
+      operationId: updateBand
+      summary: "밴드 정보 수정"
+      description: "밴드 정보를 수정합니다. 이름, 설명, 장르, 태그 등 업데이트"
+      parameters:
+        - $ref: "#/components/parameters/BandId"
+      requestBody:
+        $ref: "#/components/requestBodies/UpdateBandRequest"
+      responses:
+        "200":
+          $ref: "#/components/responses/BandResponse"
+        "400":
+          $ref: "#/components/responses/BadRequestException"
+        "403":
+          $ref: "#/components/responses/ForbiddenException"
+        "404":
+          $ref: "#/components/responses/NotFoundException"
+
+    delete:
+      tags:
+        - Band
+      operationId: deleteBand
+      summary: "밴드 삭제"
+      description: "밴드를 삭제합니다. 연관된 모든 정보 정리"
+      parameters:
+        - $ref: "#/components/parameters/BandId"
+      responses:
+        "204":
+          $ref: "#/components/responses/SuccessNoContent"
+        "403":
+          $ref: "#/components/responses/ForbiddenException"
+        "404":
+          $ref: "#/components/responses/NotFoundException"
+
+  /api/bands:
+    get:
+      tags:
+        - Band
+      operationId: getBands
+      x-spring-paginated: true
+      summary: "전체 밴드 목록 조회"
+      description: "전체 밴드 목록을 조회합니다. 페이징 처리된 결과를 반환합니다. size, page를 쿼리 파라미터로 전달하여 페이지네이션이 가능합니다."
+      responses:
+        "200":
+          $ref: "#/components/responses/BandListResponse"
+
+    post:
+      tags:
+        - Band
+      operationId: createBand
+      summary: "밴드 생성"
+      description: "새로운 밴드를 생성합니다. 밴드 마스터 정보, 이름, 설명 등 필수 정보 설정"
+      security:
+        - BearerAuth: []
+      requestBody:
+        $ref: "#/components/requestBodies/CreateBandRequest"
+      responses:
+        "201":
+          $ref: "#/components/responses/BandResponse"
+        "400":
+          $ref: "#/components/responses/BadRequestException"
+
+  /api/bands/search:
+    get:
+      tags:
+        - Band
+      operationId: searchBands
+      x-spring-paginated: true
+      summary: "밴드 검색"
+      description: "밴드를 검색합니다. 이름, 지역, 구인 여부의 검색 조건 지원. 페이징 처리된 결과를 반환합니다. size, page를 쿼리 파라미터로 전달하여 페이지네이션이 가능합니다."
+      parameters:
+        - $ref: "#/components/parameters/SearchParam"
+        - $ref: "#/components/parameters/SigunParam"
+        - $ref: "#/components/parameters/JobOpeningParam"
+      responses:
+        "200":
+          $ref: "#/components/responses/BandListResponse"
+
+  /api/bands/{bandId}/members:
+    get:
+      tags:
+        - Band
+      x-spring-paginated: true
+      operationId: getBandMembers
+      summary: "밴드 멤버 목록 조회"
+      description: "밴드 멤버 목록을 조회합니다. 각 멤버의 악기 포지션 정보 포함"
+      parameters:
+        - $ref: "#/components/parameters/BandId"
+      responses:
+        "200":
+          $ref: "#/components/responses/BandMemberListResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundException"
+
+    post:
+      tags:
+        - Band
+      operationId: addBandMember
+      summary: "밴드 멤버 추가"
+      description: "밴드에 새로운 멤버를 추가합니다. 멤버 ID와 악기 포지션 지정"
+      parameters:
+        - $ref: "#/components/parameters/BandId"
+      requestBody:
+        $ref: "#/components/requestBodies/AddBandMemberRequest"
+      responses:
+        "201":
+          $ref: "#/components/responses/BandMemberResponse"
+        "400":
+          $ref: "#/components/responses/BadRequestException"
+        "403":
+          $ref: "#/components/responses/ForbiddenException"
+        "404":
+          $ref: "#/components/responses/NotFoundException"
+
+  /api/bands/{bandId}/members/{memberId}:
+    delete:
+      tags:
+        - Band
+      operationId: removeBandMember
+      summary: "밴드 멤버 제거"
+      description: "밴드에서 특정 멤버를 제거합니다."
+      parameters:
+        - $ref: "#/components/parameters/BandId"
+        - $ref: "#/components/parameters/MemberId"
+      responses:
+        "204":
+          $ref: "#/components/responses/SuccessNoContent"
+        "403":
+          $ref: "#/components/responses/ForbiddenException"
+        "404":
+          $ref: "#/components/responses/NotFoundException"
+
+  /api/bands/{bandId}/members/{memberId}/instrument:
+    patch:
+      tags:
+        - Band
+      operationId: updateBandMemberInstrument
+      summary: "밴드 멤버 악기 변경"
+      description: "밴드 내 멤버의 악기 포지션을 변경합니다."
+      parameters:
+        - $ref: "#/components/parameters/BandId"
+        - $ref: "#/components/parameters/MemberId"
+      requestBody:
+        $ref: "#/components/requestBodies/UpdateBandMemberInstrumentRequest"
+      responses:
+        "200":
+          $ref: "#/components/responses/BandMemberResponse"
+        "400":
+          $ref: "#/components/responses/BadRequestException"
+        "403":
+          $ref: "#/components/responses/ForbiddenException"
+        "404":
+          $ref: "#/components/responses/NotFoundException"
+
+  /api/bands/{bandId}/master/transfer:
+    post:
+      tags:
+        - Band
+      operationId: transferBandMaster
+      summary: "밴드 마스터 권한 이전"
+      description: "밴드 마스터 권한을 다른 멤버에게 이전합니다."
+      parameters:
+        - $ref: "#/components/parameters/BandId"
+      requestBody:
+        $ref: "#/components/requestBodies/TransferBandMasterRequest"
+      responses:
+        "200":
+          $ref: "#/components/responses/BandResponse"
+        "400":
+          $ref: "#/components/responses/BadRequestException"
+        "403":
+          $ref: "#/components/responses/ForbiddenException"
+        "404":
+          $ref: "#/components/responses/NotFoundException"
+
+  /api/bands/{bandId}/contacts:
+    get:
+      tags:
+        - Band
+      operationId: getBandContacts
+      summary: "밴드 연락처 목록 조회"
+      description: "밴드의 연락처 정보 목록을 조회합니다. SNS 링크 등 포함"
+      parameters:
+        - $ref: "#/components/parameters/BandId"
+      responses:
+        "200":
+          $ref: "#/components/responses/ContactListResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundException"
+
+    post:
+      tags:
+        - Band
+      operationId: createBandContact
+      summary: "밴드 연락처 추가"
+      description: "밴드에 새로운 연락처 정보를 추가합니다. SNS 유형, URL 등 포함"
+      parameters:
+        - $ref: "#/components/parameters/BandId"
+      requestBody:
+        $ref: "#/components/requestBodies/CreateContactRequest"
+      responses:
+        "201":
+          $ref: "#/components/responses/ContactResponse"
+        "400":
+          $ref: "#/components/responses/BadRequestException"
+        "403":
+          $ref: "#/components/responses/ForbiddenException"
+        "404":
+          $ref: "#/components/responses/NotFoundException"
+
+  /api/bands/{bandId}/contacts/{contactId}:
+    patch:
+      tags:
+        - Band
+      operationId: updateBandContact
+      summary: "밴드 연락처 수정"
+      description: "특정 연락처 정보를 수정합니다."
+      parameters:
+        - $ref: "#/components/parameters/BandId"
+        - $ref: "#/components/parameters/ContactId"
+      requestBody:
+        $ref: "#/components/requestBodies/UpdateContactRequest"
+      responses:
+        "200":
+          $ref: "#/components/responses/ContactResponse"
+        "400":
+          $ref: "#/components/responses/BadRequestException"
+        "403":
+          $ref: "#/components/responses/ForbiddenException"
+        "404":
+          $ref: "#/components/responses/NotFoundException"
+
+    delete:
+      tags:
+        - Band
+      operationId: deleteBandContact
+      summary: "밴드 연락처 삭제"
+      description: "특정 연락처 정보를 삭제합니다."
+      parameters:
+        - $ref: "#/components/parameters/BandId"
+        - $ref: "#/components/parameters/ContactId"
+      responses:
+        "204":
+          $ref: "#/components/responses/SuccessNoContent"
+        "403":
+          $ref: "#/components/responses/ForbiddenException"
+        "404":
+          $ref: "#/components/responses/NotFoundException"

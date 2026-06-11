@@ -1,0 +1,19 @@
+{
+  "useSpringBoot3": "true",
+  "useJakartaEe" : "true",
+  "interfaceOnly" : "true",
+  "useTags" : "true",
+  "skipDefaultInterface" : "true",
+  "dateLibrary": "java8-localdatetime",
+  "useBeanValidation" : "true",
+  "serializableModel" : "true",
+  "hideGenerationTimestamp": "true",
+  "reactive": "false",
+  "generatedConstructorWithRequiredArgs": "false",
+  "generateBuilders": "false",
+  "basePackage" : "com.mickey.dinggading",
+  "configPackage" : "com.mickey.dinggading.config",
+  "modelPackage": "com.mickey.dinggading.model",
+  "apiPackage": "com.mickey.dinggading.api",
+  "invokerPackage": "com.mickey.dinggading.apis"
+}

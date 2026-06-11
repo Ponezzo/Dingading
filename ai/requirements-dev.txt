@@ -1,0 +1,35 @@
+# for local test
+
+# Jupyter & Notebook
+jupyter
+notebook
+ipykernel
+ipywidgets
+jupyterlab
+jupyterlab_widgets
+jupyterlab_server
+jupyter_console
+jupyter_server
+jupyter_server_terminals
+jupyter-events
+jupyter_core
+nbconvert
+nbformat
+nbclient
+
+# Visualization
+matplotlib
+seaborn
+imageio
+imageio-ffmpeg
+tifffile
+scikit-image
+Pygments
+
+# Debug & Tools
+debugpy
+rich
+prometheus_client
+traitlets
+psutil
+pytest

@@ -1,0 +1,87 @@
+.card-container {
+  /* border: 5px solid;  */
+  border-radius: 10px;
+  display: flex;
+  width: 30vw;
+  min-width: 455px;
+  height: 43vh;
+  min-height: 300px;
+  transition: transform 0.3s ease-in-out;
+}
+
+.card-container :hover {
+  cursor: pointer;
+}
+
+/* hover 시 애니메이션 효과를 주게 되면 navbar를 덮어 버린다. 그래서 임시로 제거 */
+/* .card-container:hover {
+  transform: scale(1.0); 
+} */ 
+
+.image-container {
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: flex-end;
+  background-repeat: no-repeat;
+}
+
+.text-container {
+  /* border: 1px solid blue; */
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  width: 45%;
+  height: 100%;
+  
+}
+
+.text {
+  display: flex;
+  flex-direction: column;  
+  justify-content: space-between;
+  /* align-items: flex-start; */
+  /* width: 90%;
+  height: 90%; */
+  color: white;
+  padding: 20px;
+  height: 70%;
+  font-size: large;
+}
+
+.sub-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.small-text {
+  display: flex;
+  justify-content: flex-start;
+  font-weight: bold;
+}
+
+.nav-text {
+  /* border: 5px solid; */
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.large-text {
+  display: flex;
+  align-items: center;
+  font-size: 25;
+  font-weight: bold;
+  
+}
+
+.navigate-icon {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}

@@ -1,0 +1,160 @@
+/* src/components/band/bandcard.module.css */
+
+.card {
+  border: 1px solid #333;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: #22252D;
+  width: 300px; /* 카드 너비 고정 (예시) */
+  position: relative; /* 내부 절대 위치 요소 기준점 */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  transition: transform 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.imageContainer {
+  width: 100%;
+  height: 200px; /* 이미지 높이 고정 (예시) */
+  position: relative;
+  background-color: #333; /* 이미지 없을 때 배경 */
+}
+
+.profileImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* 이미지가 영역을 채우도록 */
+}
+
+.placeholderImage {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  color: #aaa;
+  font-size: 1rem;
+}
+
+/* 좌측 상단 정보 컨테이너 */
+.topLeftInfo {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: rgba(0, 0, 0, 0.8); /* 가독성 위한 배경 */
+  color: white;
+  padding: 5px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  z-index: 1;
+}
+
+/* 태그 스타일 */
+.tags {
+  display: flex;
+  flex-wrap: wrap; /* 태그 많을 경우 줄바꿈 */
+  gap: 4px;
+  margin-bottom: 4px; /* 상태 정보와 간격 */
+}
+
+.tag {
+  background-color: rgba(255, 255, 255, 0.2);
+  padding: 2px 5px;
+  border-radius: 3px;
+  font-size: 0.75rem;
+}
+
+/* 인원/모집 상태 */
+.status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.sizeInfo {
+  font-weight: bold;
+}
+
+.jobStatus {
+  padding: 2px 6px;
+  border-radius: 10px;
+  font-size: 0.75rem;
+  font-weight: bold;
+}
+
+.jobStatus.open {
+  background-color: #4CAF50; /* 초록색 */
+  color: white;
+}
+
+.jobStatus.closed {
+  background-color: #f44336; /* 빨간색 */
+  color: white;
+}
+
+
+/* 좌측 하단 정보 (모집 악기) */
+.bottomLeftInfo {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  z-index: 1;
+  max-width: calc(100% - 20px); /* 카드 너비 넘지 않도록 */
+}
+
+.instrumentTitle {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 4px;
+    font-size: 0.75rem;
+}
+
+.instruments {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px; /* 악기 사이 간격 */
+}
+
+.instrument {
+  background-color: rgba(255, 255, 255, 0.15);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 0.8rem; /* 아이콘 포함 시 크기 조절 */
+  white-space: nowrap; /* 아이콘+텍스트 줄바꿈 방지 */
+}
+
+
+/* 카드 하단 내용 */
+.cardContent {
+  padding: 15px;
+}
+
+.bandName {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin: 0 0 5px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.region {
+  font-size: 0.9rem;
+  color: #ffffff;
+  margin: 0;
+}
+
+/* 선택된 카드 스타일 (필요시) */
+/*
+.card.selected {
+  border-color: dodgerblue;
+  box-shadow: 0 4px 8px rgba(30, 144, 255, 0.3);
+}
+*/

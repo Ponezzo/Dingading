@@ -1,0 +1,73 @@
+.tier {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 2rem;
+  height: 100vh;
+}
+
+.unityArea {
+  /* border: 5px solid; */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 50vw;
+  min-width: 50rem;
+  height: 90vh;
+  gap: 2rem;
+}
+
+.upper {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 90%;
+}
+
+.playingPeople {
+  /* border: 5px solid; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 80%;
+  height: 50vh;
+}
+
+.under {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 80%;
+}
+
+.tierContainer  {
+  /* border: 5px solid; */
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 50%;
+  height: 20vh;
+  gap : 5rem
+}
+
+.notice {
+  /* border: 5px solid; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40%;
+  height: 20vh;
+
+}
+
+.navArea {
+  display: flex;
+  flex-direction: column;
+  /* align-items: center; */
+  gap: 2rem;
+}
+

@@ -1,0 +1,403 @@
+openapi: 3.0.0
+info:
+  title: 딩가딩 녹음 API
+  version: 1.0.0
+  description: "사용자의 연주 녹음을 관리하는 API"
+
+tags:
+  - name: Record
+    description: 녹음 기록 관련 API - 개발 완료
+
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: "JWT 인증 토큰을 사용합니다. 예: Bearer {token}"
+  
+  parameters:
+    RecordId:
+      name: recordId
+      in: path
+      description: "녹음 ID"
+      required: true
+      schema:
+        type: integer
+        format: int64
+    
+    MemberId:
+      name: memberId
+      in: path
+      description: "회원 ID"
+      required: true
+      schema:
+        type: string
+        format: uuid
+  
+  schemas:
+    ProblemDetail:
+      type: object
+      properties:
+        status:
+          type: integer
+          description: "HTTP 상태 코드"
+        title:
+          type: string
+          description: "오류 제목"
+        detail:
+          type: string
+          description: "오류 상세 내용"
+        instance:
+          type: string
+          description: "오류가 발생한 URI"
+        timestamp:
+          type: string
+          format: date-time
+          description: "오류 발생 시간"
+    
+    RecordDTO:
+      type: object
+      properties:
+        recordId:
+          type: integer
+          format: int64
+          description: "녹음 고유 식별자"
+        memberId:
+          type: string
+          format: uuid
+          description: "회원 ID"
+        attemptId:
+          type: integer
+          format: int64
+          description: "도전 ID (없을 경우 null)"
+        dtype:
+          type: string
+          enum: [CHALLENGE, LIVE_HOUSE, PRACTICE]
+          description: "녹음 유형"
+        title:
+          type: string
+          description: "녹음 제목"
+        recordUrl:
+          type: string
+          description: "녹음 파일 URL"
+        createdAt:
+          type: string
+          format: date-time
+          description: "생성 날짜"
+      required:
+        - recordId
+        - memberId
+        - dtype
+        - title
+        - recordUrl
+    
+    RecordCreateRequestDTO:
+      type: object
+      properties:
+        attemptId:
+          type: integer
+          format: int64
+          description: "도전 ID (없을 경우 null)"
+        dtype:
+          type: string
+          enum: [CHALLENGE, LIVE_HOUSE, PRACTICE]
+          description: "녹음 유형"
+        title:
+          type: string
+          description: "녹음 제목"
+      required:
+        - dtype
+        - title
+  
+  requestBodies:
+    RecordCreateRequest:
+      required: true
+      content:
+        multipart/form-data:
+          schema:
+            type: object
+            properties:
+              recordInfo:
+                $ref: '#/components/schemas/RecordCreateRequestDTO'
+              audioFile:
+                type: string
+                format: binary
+                description: "녹음 파일 (mp3, wav 형식)"
+            required:
+              - recordInfo
+              - audioFile
+          examples:
+            practice_recording:
+              summary: "연습 녹음 예시"
+              value:
+                recordInfo: |
+                  {
+                    "memberId": "123e4567-e89b-12d3-a456-426614174000",
+                    "dtype": "PRACTICE",
+                    "title": "2025년 3월 27일 기타 연습"
+                  }
+                audioFile: "[이진 오디오 파일 데이터]"
+            challenge_recording:
+              summary: "챌린지 녹음 예시"
+              value:
+                recordInfo: |
+                  {
+                    "memberId": "123e4567-e89b-12d3-a456-426614174000",
+                    "attemptId": 42,
+                    "dtype": "CHALLENGE",
+                    "title": "실버 티어 도전 - 기타"
+                  }
+                audioFile: "[이진 오디오 파일 데이터]"
+  
+  responses:
+    RecordResponse:
+      description: "녹음 정보"
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RecordDTO'
+    
+    RecordListResponse:
+      description: "녹음 목록"
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/RecordDTO'
+    
+    RecordCreateResponse:
+      description: "녹음 생성 결과"
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RecordDTO'
+    
+    BadRequestError:
+      description: "잘못된 요청"
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/ProblemDetail'
+              - type: object
+                properties:
+                  title:
+                    type: string
+                    example: "잘못된 요청입니다."
+    
+    NotFoundError:
+      description: "요청한 리소스를 찾을 수 없습니다."
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/ProblemDetail'
+              - type: object
+                properties:
+                  title:
+                    type: string
+                    example: "리소스를 찾을 수 없습니다."
+    
+    UnauthorizedError:
+      description: "인증 실패"
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/ProblemDetail'
+              - type: object
+                properties:
+                  title:
+                    type: string
+                    example: "인증에 실패했습니다."
+
+security:
+  - BearerAuth: []
+
+paths:
+  /api/records/me:
+    post:
+      tags:
+        - Record
+      operationId: createRecord
+      summary: "녹음 생성"
+      description: "새로운 연주 녹음을 업로드합니다. 업로드가 끝나면 분석이 바로 시작됩니다."
+      security:
+        - BearerAuth: []
+      requestBody:
+        $ref: '#/components/requestBodies/RecordCreateRequest'
+      responses:
+        '201':
+          $ref: '#/components/responses/RecordCreateResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+    
+    get:
+      tags:
+        - Record
+      operationId: getRecords
+      summary: "녹음 목록 조회"
+      description: "모든 녹음 목록을 조회합니다.  페이지네이션이 가능합니다. size, page"
+      x-spring-paginated: true
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: memberId
+          in: query
+          description: "회원 ID로 필터링"
+          required: false
+          schema:
+            type: string
+            format: uuid
+        - name: dtype
+          in: query
+          description: "녹음 유형으로 필터링"
+          required: false
+          schema:
+            type: string
+            enum: [CHALLENGE, LIVE_HOUSE, PRACTICE]
+      responses:
+        '200':
+          description: "녹음 목록 조회 결과"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/RecordDTO'
+                  pageable:
+                    type: object
+                    properties:
+                      page:
+                        type: integer
+                        description: "현재 페이지 번호"
+                      size:
+                        type: integer
+                        description: "페이지 크기"
+                      totalElements:
+                        type: integer
+                        description: "전체 요소 수"
+                      totalPages:
+                        type: integer
+                        description: "전체 페이지 수"
+                    required:
+                      - page
+                      - size
+                      - totalElements
+                      - totalPages
+                required:
+                  - content
+                  - pageable
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  
+  /api/records/{recordId}:
+    get:
+      tags:
+        - Record
+      operationId: getRecord
+      summary: "녹음 상세 조회"
+      description: "특정 녹음의 상세 정보를 조회합니다."
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/RecordId'
+      responses:
+        '200':
+          $ref: '#/components/responses/RecordResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  
+  /api/members/{memberId}/records:
+    get:
+      tags:
+        - Record
+      operationId: getMemberRecords
+      x-spring-paginated: true
+      summary: "회원별 녹음 목록 조회"
+      description: "특정 회원의 녹음 목록을 조회합니다. 페이지네이션이 가능합니다. size, page"
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/MemberId'
+        - name: dtype
+          in: query
+          description: "녹음 유형으로 필터링"
+          required: false
+          schema:
+            type: string
+            enum: [CHALLENGE, LIVE_HOUSE, PRACTICE]
+      responses:
+        '200':
+          description: "회원별 녹음 목록 조회 결과"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/RecordDTO'
+                  pageable:
+                    type: object
+                    properties:
+                      page:
+                        type: integer
+                        description: "현재 페이지 번호"
+                      size:
+                        type: integer
+                        description: "페이지 크기"
+                      totalElements:
+                        type: integer
+                        description: "전체 요소 수"
+                      totalPages:
+                        type: integer
+                        description: "전체 페이지 수"
+                    required:
+                      - page
+                      - size
+                      - totalElements
+                      - totalPages
+                required:
+                  - content
+                  - pageable
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /api/attempts/{attemptId}/records:
+    get:
+      tags:
+        - Record
+      operationId: getAttemptRecords
+      summary: "도전별 녹음 조회"
+      description: "특정 도전에 대한 녹음을 조회합니다."
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: attemptId
+          in: path
+          description: "도전 ID"
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          $ref: '#/components/responses/RecordResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'

@@ -1,0 +1,21 @@
+.streamcomponent {
+  position: relative;
+}
+
+.streamcomponent p {
+  background: #f8f8f8;
+  padding: 5px;
+  color: #777777;
+  font-weight: bold;
+  border-bottom-right-radius: 4px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  margin: 0;
+}
+
+.streamcomponent video {
+  width: 100%;
+  height: auto;
+}

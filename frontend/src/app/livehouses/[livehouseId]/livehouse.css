@@ -1,0 +1,468 @@
+/* 전체 컨테이너 */
+.livehouse-container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  position: fixed;
+  margin: 0;
+  padding: 0;
+  z-index: 1;
+}
+
+/* 배경 및 메인 영역 */
+.livehouse-main {
+  width: 100%;
+  height: 100%;
+  /* background-image: url("/LiveHouse/Background.png"); */
+  background-size: 79% 100%;
+  background-position: left;
+  background-repeat: no-repeat;
+  display: flex;
+  margin-left: -3rem;
+  position: absolute;
+  left: 0;
+  z-index: 1;
+}
+
+/* 컨텐츠 영역 */
+.livehouse-content {
+  width: 80%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 관객 및 캐릭터 레이어 */
+.livehouse-audience-layer {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+}
+
+.livehouse-character-layer {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  z-index: 3;
+}
+
+/* 캐릭터 컨트롤 버튼 */
+.livehouse-character-controls {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 4;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.livehouse-prev-button,
+.livehouse-next-button {
+  width: 40px;
+  height: 40px;
+  background-color: transparent;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.livehouse-prev-button {
+  margin-right: 200px;
+}
+
+.livehouse-next-button {
+  margin-left: 200px;
+}
+
+.livehouse-prev-button span,
+.livehouse-next-button span {
+  font-size: 50px;
+  color: #f72585;
+}
+
+/* 정보 및 버튼 영역 */
+.livehouse-info {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+}
+
+.livehouse-threshold-label {
+  color: #fff;
+  font-size: 24px;
+}
+
+.livehouse-control-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.livehouse-threshold-slider {
+  width: 200px;
+  accent-color: #f72585;
+}
+
+.livehouse-mute-button {
+  padding: 5px 10px;
+  background-color: #f72585;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.livehouse-mute-button.muted {
+  background-color: #ff4444;
+}
+
+.livehouse-title {
+  color: #fff;
+  font-size: 24px;
+}
+
+.livehouse-text {
+  color: #fff;
+}
+
+.livehouse-button-group {
+  display: flex;
+  gap: 10px;
+}
+
+.livehouse-leave-button {
+  padding: 5px 10px;
+  background-color: #f72585;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.livehouse-close-button {
+  padding: 5px 10px;
+  background-color: #ff4444;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* 채팅 영역 */
+.livehouse-chat {
+  width: 21%;
+  height: 100%;
+  background: #2b2b2b;
+  padding: 10px;
+  padding-right: 90px;
+  margin: 0;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+}
+
+.livehouse-chat-container {
+  height: 90%;
+  overflow-y: auto;
+  padding: 10px;
+  background: #1e1e1e;
+  border-radius: 5px;
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
+}
+
+.livehouse-chat-message {
+  margin-bottom: 10px;
+  padding: 8px 12px;
+  background: #444;
+  color: #fff;
+  border-radius: 10px;
+  max-width: 70%;
+}
+
+.livehouse-chat-message.me {
+  background: #f72585;
+  margin-left: auto;
+  margin-right: 0;
+}
+
+.livehouse-chat-message .sender {
+  font-weight: bold;
+}
+
+.livehouse-chat-message .timestamp {
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.livehouse-chat-message p {
+  margin: 5px 0 0;
+}
+
+.livehouse-participants {
+  margin-bottom: 10px;
+  padding: 8px 12px;
+  background: #444;
+  color: #fff;
+  border-radius: 10px;
+  max-width: 70%;
+}
+
+.livehouse-participants h2 {
+  margin: 0;
+}
+
+.livehouse-participants ul {
+  list-style: none;
+  padding: 0;
+}
+
+.livehouse-chat-input-group {
+  display: flex;
+  margin-top: 10px;
+  gap: 5px;
+}
+
+.livehouse-chat-input {
+  height: 40px;
+  width: 100%;
+  padding: 5px;
+  border-radius: 5px;
+  border: 1px solid #555;
+  background: #333;
+  color: #fff;
+}
+
+.livehouse-chat-submit {
+  padding: 5px 10px;
+  background-color: #f72585;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* 로딩 상태 */
+.loading {
+  color: #fff;
+  font-size: 24px;
+  text-align: center;
+  padding: 20px;
+}
+
+.livehouse-mute-button {
+  padding: 8px 16px;
+  background-color: #444;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+.livehouse-mute-button.muted {
+  background-color: #ff4444;
+}
+
+.livehouse-play-button {
+  padding: 8px 16px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.livehouse-play-button:hover {
+  background-color: #45a049;
+}
+
+/* 기존 CSS 파일에 추가할 스타일 */
+
+.livehouse-audio-level {
+  margin-top: 10px;
+  width: 100%;
+}
+
+.audio-level-meter {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.livehouse-audio-warning {
+  margin-top: 5px;
+  padding: 5px;
+  background-color: rgba(255, 0, 0, 0.1);
+  border-radius: 4px;
+  font-size: 12px;
+  text-align: center;
+}
+
+/* 마이크 테스트 모달 스타일 */
+.mic-test-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.mic-test-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
+}
+
+.mic-test-header {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.mic-test-level {
+  height: 20px;
+  background-color: #f0f0f0;
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 10px 0;
+}
+
+.mic-test-level-bar {
+  height: 100%;
+  background-color: #4caf50;
+  transition: width 0.1s ease;
+}
+
+.mic-test-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.mic-test-button {
+  padding: 8px 16px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+}
+
+.mic-test-start {
+  background-color: #2196f3;
+  color: white;
+}
+
+.mic-test-cancel {
+  background-color: #f44336;
+  color: white;
+}
+
+.mic-test-confirm {
+  background-color: #4caf50;
+  color: white;
+}
+
+/* 기존 CSS 파일에 추가할 스타일 */
+
+.livehouse-audio-level {
+  margin-top: 10px;
+  width: 100%;
+}
+
+.audio-level-meter {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.livehouse-audio-warning {
+  margin-top: 5px;
+  padding: 5px;
+  background-color: rgba(255, 0, 0, 0.1);
+  border-radius: 4px;
+  font-size: 12px;
+  text-align: center;
+}
+
+/* 마이크 테스트 모달 스타일 */
+.mic-test-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.mic-test-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
+}
+
+.mic-test-header {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.mic-test-level {
+  height: 20px;
+  background-color: #f0f0f0;
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 10px 0;
+}
+
+.mic-test-level-bar {
+  height: 100%;
+  background-color: #4caf50;
+  transition: width 0.1s ease;
+}
+
+.mic-test-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.mic-test-button {
+  padding: 8px 16px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+}
+
+.mic-test-start {
+  background-color: #2196f3;
+  color: white;
+}
+
+.mic-test-cancel {
+  background-color: #f44336;
+  color: white;
+}
+
+.mic-test-confirm {
+  background-color: #4caf50;
+  color: white;
+}

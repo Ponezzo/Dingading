@@ -1,0 +1,103 @@
+SPRING_ENV_MODE: TEST
+spring:
+  application:
+    name: dinggading-test
+  config:
+    import:
+      - optional:file:../infra/env/.env.production[.properties]
+      - optional:file:../infra/env/.env.production.local[.properties]
+      - optional:file:../infra/env/.env.development.local[.properties]
+  jackson:
+    time-zone: Asia/Seoul
+  ### Google OAuth ###
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_ID}
+            client-secret: ${GOOGLE_SECRET}
+            scope:
+              - profile
+              - email
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        jdbc:
+          time_zone: Asia/Seoul
+        format_sql: true
+        show_sql: true
+    hibernate:
+      ddl-auto: create-drop
+    database-platform: org.hibernate.dialect.H2Dialect
+
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;MODE=MySQL
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+    hikari:
+      pool-name: test-hikari-pool
+      maximum-pool-size: 5
+      minimum-idle: 2
+      connection-timeout: 5000
+      connection-init-sql: "SELECT 1"
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      auto-commit: true
+
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
+
+
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 10MB
+decorator:
+  datasource:
+    p6spy:
+      enabled: false
+logging:
+  level:
+    root: warn
+    com.mickey: debug
+    org.hibernate.SQL: debug
+    org.hibernate.type.descriptor.sql.BasicBinder: trace
+
+# JWT setting
+jwt:
+  secret-key: test_jwt_secret_key_for_testing_purposes_only_not_for_production_use
+  access-token:
+    expiretime: 86400000
+  refresh-token:
+    expiretime: 604800000
+
+minio:
+  endpoint: temp
+  access-key: temp
+  secret-key: temp
+  bucket: temp
+
+rabbitmq:
+  audio-analysis-request-queue:
+    name: audio-analysis-request
+  audio-analysis-response-queue:
+    name: audio-analysis-response
+  audio-analysis-request-exchange:
+    name: audio-analysis-request-exchange
+  audio-analysis-response-exchange:
+    name: audio-analysis-response-exchange
+  audio-analysis-request:
+    routing:
+      key: audio.analysis.request
+  audio-analysis-response:
+    routing:
+      key: audio.analysis.response
+
+openvidu:
+  secret: test
+  url: http://test

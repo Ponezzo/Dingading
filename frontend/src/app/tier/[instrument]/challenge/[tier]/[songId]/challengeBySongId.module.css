@@ -1,0 +1,32 @@
+/* challengeBySongId.module.css */
+.controlSection {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.mainControlButton {
+  padding: 15px 30px;
+  font-size: 1.2rem;
+  border-radius: 8px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.mainControlButton:hover {
+  background-color: #0056b3;
+}
+
+.mainControlButton:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.waveformsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}

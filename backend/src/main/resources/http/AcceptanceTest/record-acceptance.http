@@ -1,0 +1,213 @@
+@token = {{token}}
+@instrument = BASS
+@rankMatchingId = {{rankMatchingId}}
+
+#INSERT INTO song (
+#created_at,
+#updated_at,
+#artist,
+#description,
+#song_filename,
+#title,
+#youtube_url
+#) VALUES (
+#    NOW(),                              -- created_at
+#    NOW(),                              -- updated_at
+#    '윤도현',                           -- artist
+#    '윤도현의 대표곡 중 하나인 나는 나비', -- description
+#    '윤도현-나는 나비.mp3',              -- song_filename (실제 파일명에 맞게 조정 필요)
+#    '나는 나비',                         -- title
+#    'https://www.youtube.com/watch?v=Example' -- youtube_url (실제 URL로 대체 필요)
+#);
+
+#INSERT INTO song_by_instrument (
+#created_at,
+#updated_at,
+#song_id,                          -- 이 값은 실제 song 테이블의 ID 값으로 대체해야 합니다
+#song_instrument_pack_id,          -- 이 값은 실제 pack의 ID 값으로 대체해야 합니다
+#song_by_instrument_ex_filename,   -- 예제 파일명
+#song_by_instrument_filename,      -- 일반 파일명
+#song_by_instrument_analysis_json, -- 분석 JSON 파일명
+#instrument,                       -- 악기 유형
+#tier                              -- 티어 레벨
+#)
+#VALUES (
+#    NOW(),
+#    NOW(),
+#    [적절한 song_id 값],
+#    [적절한 pack_id 값],
+#    'bronze_bass_윤도현-나는 나비_ex.wav',
+#    'bronze_bass_윤도현-나는 나비.wav',
+#    'bronze_bass_윤도현-나는 나비.json',
+#    'BASS',
+#    'BRONZE'
+#);
+### 1. 유저 회원 가입
+
+POST {{baseUrl}}/api/users
+Content-Type: application/json
+
+> {%
+    client.global.set("token", response.body.accessToken);
+    client.test("Validate", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+### 2. 유저 브론즈로 도전
+POST {{baseUrl}}/api/rank-matchings
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "songInstrumentPackId": 1,
+  "instrument": "{{instrument}}",
+  "rankType": "CHALLENGE",
+  "targetTier": "BRONZE"
+}
+
+> {%
+    client.global.set("rankMatchingId", response.body.rankMatchingId);
+    client.test("Validate", function () {
+        client.assert(response.status === 201, "Response status is not 200");
+    });
+%}
+
+### 3. 유저 첫번째 곡 시도
+POST {{baseUrl}}/api/attempts
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "rankMatchingId": {{rankMatchingId}},
+  "songByInstrumentId": 1,
+  "recordUrl": "",
+  "gameType": "RANK"
+}
+
+> {%
+    client.global.set("attemptId", response.body.attemptId);
+    client.test("Validate", function () {
+        client.assert(response.status === 201, "Response status is not 201");
+    });
+%}
+
+### 4. 유저 첫번째 곡 성공
+GET {{baseUrl}}/api/attempts/test?
+    attemptId={{attemptId}}&
+    score1=60&
+    score2=60&
+    score3=60
+
+> {%
+    client.test("Validate", function () {
+        client.assert(response.status === 201, "Response status is not 201");
+    });
+%}
+
+### 5. 유저 두번째 곡 시도
+POST {{baseUrl}}/api/attempts
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "rankMatchingId": {{rankMatchingId}},
+  "songByInstrumentId": 2,
+  "recordUrl": "",
+  "gameType": "RANK"
+}
+
+> {%
+    client.global.set("attemptId", response.body.attemptId);
+    client.test("Validate", function () {
+        client.assert(response.status === 201, "Response status is not 201");
+    });
+%}
+
+### 6. 유저 두번째 곡 성공
+GET {{baseUrl}}/api/attempts/test?
+    attemptId={{attemptId}}&
+    score1=60&
+    score2=60&
+    score3=60
+
+> {%
+    client.test("Validate", function () {
+        client.assert(response.status === 201, "Response status is not 201");
+    });
+%}
+
+### 7. 유저 세번째 곡 시도
+POST {{baseUrl}}/api/attempts
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "rankMatchingId": {{rankMatchingId}},
+  "songByInstrumentId": 3,
+  "recordUrl": "",
+  "gameType": "RANK"
+}
+
+> {%
+    client.global.set("attemptId", response.body.attemptId);
+    client.test("Validate", function () {
+        client.assert(response.status === 201, "Response status is not 201");
+    });
+%}
+
+### 6. 유저 세번째 곡 성공
+GET {{baseUrl}}/api/attempts/test?
+    attemptId={{attemptId}}&
+    score1=60&
+    score2=60&
+    score3=60
+
+> {%
+    client.test("Validate", function () {
+        client.assert(response.status === 201, "Response status is not 200");
+    });
+%}
+
+### 4. 녹음 생성 (POST /api/records)
+POST {{baseUrl}}/api/records/me
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+Authorization: Bearer {{token}}
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="recordInfo"
+Content-Type: application/json
+
+{
+  "attemptId": {{attemptId}},
+  "dtype": "CHALLENGE",
+  "title": "테스트 녹음"
+}
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="audioFile"; filename="sample.mp3"
+Content-Type: audio/mpeg
+
+< ./sample.mp3
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+
+###
+GET http://localhost:8080/api/attempts/test?
+    attemptId=1&
+    score1={{$random.integer(100)}}&
+    score2={{$random.integer(100)}}&
+    score3={{$random.integer(100)}}
+
+###
+GET http://localhost:8080/api/attempts/test?
+    attemptId=1&
+    score1={{$random.integer(100)}}&
+    score2={{$random.integer(100)}}&
+    score3={{$random.integer(100)}}
+
+###
+GET http://localhost:8080/api/attempts/test?
+    attemptId=1&
+    score1={{$random.integer(100)}}&
+    score2={{$random.integer(100)}}&
+    score3={{$random.integer(100)}}

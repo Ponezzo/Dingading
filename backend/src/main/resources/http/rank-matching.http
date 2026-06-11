@@ -1,0 +1,26 @@
+
+@memberId = bf9507c1-f83f-473d-8ec9-b15bc9271594
+@token = eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhY2Nlc3NUb2tlbiIsInVzZXJuYW1lIjoicWtyd25zZ2g3MXdAZ21haWwuY29tIiwiaWQiOiJiZjk1MDdjMS1mODNmLTQ3M2QtOGVjOS1iMTViYzkyNzE1OTQiLCJpYXQiOjE3NDMwNTIxMTIsImV4cCI6MTc0NDc1NzE0NH0.UD_OzVTwCmNErc-Va9qv7QR17RzphnNFcH-HVLwb1GA
+@instrument = DRUM
+
+###
+GET {{baseUrl}}/api/rank-matchings/VOCAL/available
+Accept: application/json
+Authorization: Bearer {{token}}
+
+###
+GET {{baseUrl}}/api/rank-matchings/VOCAL/tier-available
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+POST {{baseUrl}}/api/rank-matchings
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "songInstrumentPackId": 3,
+  "instrument": "VOCAL",
+  "rankType": "CHALLENGE",
+  "targetTier": "SILVER"
+}

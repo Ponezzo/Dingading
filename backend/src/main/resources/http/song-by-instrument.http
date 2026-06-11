@@ -1,0 +1,174 @@
+### 환경 변수 설정
+@memberId = bf9507c1-f83f-473d-8ec9-b15bc9271594
+@token = eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhY2Nlc3NUb2tlbiIsInVzZXJuYW1lIjoicWtyd25zZ2g3MXdAZ21haWwuY29tIiwiaWQiOiJiZjk1MDdjMS1mODNmLTQ3M2QtOGVjOS1iMTViYzkyNzE1OTQiLCJpYXQiOjE3NDMwNTIxMTIsImV4cCI6MTc0NDc1NzE0NH0.UD_OzVTwCmNErc-Va9qv7QR17RzphnNFcH-HVLwb1GA
+@instrument = DRUM
+@contentType = application/json
+
+
+### ------------------------------------------------
+### SongByInstrumentController 테스트
+### ------------------------------------------------
+
+### 1. 특정 악기별 곡 버전 상세 정보 조회
+# 존재하는 악기별 곡 버전의 ID를 사용해야 함
+GET {{baseUrl}}/api/songs/instruments/1
+Accept: {{contentType}}
+Authorization: {{token}}
+
+> {%
+    client.test("악기별 곡 버전 상세 정보 조회 상태 코드는 200", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+### 2. 특정 곡의 모든 악기별 버전 목록 조회
+# 존재하는 곡의 ID를 사용해야 함
+GET {{baseUrl}}/api/songs/1/instruments
+Accept: {{contentType}}
+Authorization: {{token}}
+
+> {%
+    client.test("곡의 악기별 버전 목록 조회 상태 코드는 200", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+### ------------------------------------------------
+### SongInstrumentPackController 테스트
+### ------------------------------------------------
+
+### 1. 특정 곡 팩 상세 정보 조회
+# 존재하는 곡 팩의 ID를 사용해야 함
+GET {{baseUrl}}/api/song-packs/1
+Accept: {{contentType}}
+Authorization: {{token}}
+
+> {%
+    client.test("곡 팩 상세 정보 조회 상태 코드는 200", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+### 2. 모든 곡 팩 목록 조회 (페이징)
+# 페이징 정보 포함
+GET {{baseUrl}}/api/song-packs?page=0&size=10&sort=packName,asc
+Accept: {{contentType}}
+Authorization: {{token}}
+
+> {%
+    client.test("모든 곡 팩 목록 조회 상태 코드는 200", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+### 3. 특정 악기에 해당하는 곡 팩 목록 조회 (페이징)
+# VOCAL, GUITAR, DRUM, BASS 중 하나를 사용해야 함
+GET {{baseUrl}}/api/song-packs/by-instrument/VOCAL?page=0&size=10
+Accept: {{contentType}}
+Authorization: {{token}}
+
+> {%
+    client.test("VOCAL 악기 곡 팩 목록 조회 상태 코드는 200", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+### 4. 특정 티어에 해당하는 곡 팩 목록 조회 (페이징)
+# UNRANKED, IRON, BRONZE, SILVER, GOLD, PLATINUM, DIAMOND 중 하나를 사용해야 함
+GET {{baseUrl}}/api/song-packs/by-tier/SILVER?page=0&size=10
+Accept: {{contentType}}
+Authorization: {{token}}
+
+> {%
+    client.test("SILVER 티어 곡 팩 목록 조회 상태 코드는 200", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+### 다양한 악기 타입 테스트
+GET {{baseUrl}}/api/song-packs/by-instrument/GUITAR?page=0&size=5
+Accept: {{contentType}}
+Authorization: {{token}}
+
+> {%
+    client.test("GUITAR 악기 곡 팩 목록 조회 상태 코드는 200", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+### 다양한 티어 테스트
+GET {{baseUrl}}/api/song-packs/by-instrument/DRUM?page=0&size=5
+Accept: {{contentType}}
+Authorization: {{token}}
+
+> {%
+    client.test("DRUM 악기 곡 팩 목록 조회 상태 코드는 200", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+### 다양한 티어 테스트
+GET {{baseUrl}}/api/song-packs/by-instrument/BASS?page=0&size=5
+Accept: {{contentType}}
+Authorization: {{token}}
+
+> {%
+    client.test("BASS 악기 곡 팩 목록 조회 상태 코드는 200", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+### 다양한 티어 테스트
+GET {{baseUrl}}/api/song-packs/by-tier/IRON?page=0&size=5
+Accept: {{contentType}}
+Authorization: {{token}}
+
+> {%
+    client.test("IRON 티어 곡 팩 목록 조회 상태 코드는 200", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+### 다양한 티어 테스트
+GET {{baseUrl}}/api/song-packs/by-tier/BRONZE?page=0&size=5
+Accept: {{contentType}}
+Authorization: {{token}}
+
+> {%
+    client.test("BRONZE 티어 곡 팩 목록 조회 상태 코드는 200", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+### 다양한 티어 테스트
+GET {{baseUrl}}/api/song-packs/by-tier/GOLD?page=0&size=5
+Accept: {{contentType}}
+Authorization: {{token}}
+
+> {%
+    client.test("GOLD 티어 곡 팩 목록 조회 상태 코드는 200", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+### 다양한 티어 테스트
+GET {{baseUrl}}/api/song-packs/by-tier/PLATINUM?page=0&size=5
+Accept: {{contentType}}
+Authorization: {{token}}
+
+> {%
+    client.test("PLATINUM 티어 곡 팩 목록 조회 상태 코드는 200", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+###
+GET {{baseUrl}}/api/song-packs/by-tier/DIAMOND?page=0&size=5
+Accept: {{contentType}}
+Authorization: {{token}}
+
+> {%
+    client.test("DIAMOND 티어 곡 팩 목록 조회 상태 코드는 200", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}

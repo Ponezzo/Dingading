@@ -1,0 +1,115 @@
+### 환경 변수 설정
+@memberId = bf9507c1-f83f-473d-8ec9-b15bc9271594
+@token = eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhY2Nlc3NUb2tlbiIsInVzZXJuYW1lIjoicWtyd25zZ2g3MXdAZ21haWwuY29tIiwiaWQiOiJiZjk1MDdjMS1mODNmLTQ3M2QtOGVjOS1iMTViYzkyNzE1OTQiLCJpYXQiOjE3NDMwNTIxMTIsImV4cCI6MTc0NDc1NzE0NH0.UD_OzVTwCmNErc-Va9qv7QR17RzphnNFcH-HVLwb1GA
+@instrument = DRUM
+@contentType = application/json
+
+### 곡 목록 페이징 조회
+# 전체 곡 목록을 조회합니다. 페이지 사이즈 10, 첫 번째 페이지 요청
+GET {{baseUrl}}/api/songs?page=0&size=1
+Accept: {{contentType}}
+
+> {%
+    client.test("곡 목록 페이징 조회 성공", function () {
+        client.assert(response.status === 200, "응답 상태코드가 200이어야 합니다.");
+    });
+%}
+
+### 새로운 곡 등록
+# 새로운 곡을 등록합니다. 악기 버전(보컬, 기타)도 함께 등록합니다.
+POST {{baseUrl}}/api/songs
+Content-Type: {{contentType}}
+
+{
+  "title": "Dynamite",
+  "description": "BTS의 히트곡 Dynamite",
+  "youtubeUrl": "https://www.youtube.com/watch?v=gdZLi9oWNZg",
+  "instruments": [
+    {
+      "instrumentUrl": "https://storage.example.com/songs/vocal_dynamite.mp3",
+      "instrument": "VOCAL",
+      "tier": "IRON",
+      "songInstrumentPackId": 1
+    },
+    {
+      "instrumentUrl": "https://storage.example.com/songs/guitar_dynamite.mp3",
+      "instrument": "GUITAR",
+      "tier": "BRONZE",
+      "songInstrumentPackId": 2
+    }
+  ]
+}
+
+> {%
+    client.test("새로운 곡 등록 성공", function () {
+        client.assert(response.status === 201, "응답 상태코드가 201이어야 합니다.");
+    });
+
+    // 응답에서 곡 ID를 변수로 저장합니다
+    client.global.set("songId", response.body.songId);
+    client.log("새로 생성된 곡 ID: " + client.global.get("songId"));
+%}
+
+### 특정 곡 상세 정보 조회
+# 앞서 생성한 곡의 상세 정보를 조회합니다
+GET {{baseUrl}}/api/songs/{{songId}}
+Accept: {{contentType}}
+
+> {%
+    client.test("특정 곡 상세 정보 조회 성공", function () {
+        client.assert(response.status === 200, "응답 상태코드가 200이어야 합니다.");
+    });
+%}
+
+### 특정 곡의 악기별 연주 정보 조회
+# 앞서 생성한 곡에 등록된 모든 악기 버전을 조회합니다
+GET {{baseUrl}}/songs/{{songId}}/instruments
+Accept: {{contentType}}
+
+> {%
+    client.test("악기별 연주 정보 조회 성공", function () {
+        client.assert(response.status === 200, "응답 상태코드가 200이어야 합니다.");
+    });
+%}
+
+### 특정 곡에 새로운 악기 버전 추가
+# 앞서 생성한 곡에 드럼 악기 버전을 추가합니다
+POST {{baseUrl}}/songs/{{songId}}/instruments
+Content-Type: {{contentType}}
+
+{
+  "instrument": "DRUM",
+  "mediaUrl": "https://storage.example.com/songs/drum_dynamite.mp3"
+}
+
+> {%
+    client.test("새로운 악기 버전 추가 성공", function () {
+        client.assert(response.status === 201, "응답 상태코드가 201이어야 합니다.");
+    });
+
+    // 응답에서 악기별 곡 ID를 변수로 저장합니다
+    client.global.set("songByInstrumentId", response.body.songByInstrumentId);
+    client.log("새로 생성된 악기별 곡 ID: " + client.global.get("songByInstrumentId"));
+%}
+
+### 악기별 곡 목록 조회
+# VOCAL 악기에 해당하는 모든 곡을 조회합니다
+GET {{baseUrl}}/api/songs/by-instrument/VOCAL?page=0&size=10
+Accept: {{contentType}}
+
+> {%
+    client.test("악기별 곡 목록 조회 성공", function () {
+        client.assert(response.status === 200, "응답 상태코드가 200이어야 합니다.");
+    });
+%}
+
+### 티어별 곡 목록 조회
+# GOLD 티어에 해당하는 모든 곡을 조회합니다
+GET {{baseUrl}}/api/songs/by-tier/GOLD?page=0&size=10
+Accept: {{contentType}}
+
+> {%
+    client.test("티어별 곡 목록 조회 성공", function () {
+        client.assert(response.status === 200, "응답 상태코드가 200이어야 합니다.");
+    });
+%}

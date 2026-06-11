@@ -1,0 +1,142 @@
+spring:
+  application:
+    name: dinggading
+
+  data:
+    mongodb:
+      # uri: mongodb+srv://dingading:e4n9T64pQzk3oHJ8@dingadingcluster.zsj12qy.mongodb.net/?retryWrites=true&w=majority&appName=DingadingCluster
+      # host: localhost
+      # port: 27017
+      # database: dingading
+      # username: dingading
+      # password: e4n9T64pQzk3oHJ8
+      host: ${MONGO_DB_HOST}
+      port: ${MONGO_DB_PORT}
+      username: ${MONGO_INITDB_ROOT_USERNAME}
+      password: ${MONGO_INITDB_ROOT_PASSWORD}
+      database: ${MONGO_INITDB_DATABASE}
+      authentication-database: admin
+
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      password: ${REDIS_ROOT_PASSWORD}
+
+  rabbitmq:
+    host: ${RABBIT_MQ_HOST}
+    port: ${RABBIT_MQ_PORT}
+    username: ${RABBITMQ_DEFAULT_USER}
+    password: ${RABBITMQ_DEFAULT_PASS}
+
+  ### problem details
+  mvc:
+    problemdetails:
+      enabled: true
+
+  ### Google OAuth ###
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_ID}
+            client-secret: ${GOOGLE_SECRET}
+            redirect-uri: ${REDIRECT_URI}/oauth2/code/google
+            scope:
+              - profile
+              - email
+
+  config:
+    import:
+      - optional:file:../infra/env/.env.development[.properties]
+      - optional:file:../infra/env/.env.production[.properties]
+      - optional:file:../infra/env/.env.production.local[.properties]
+      - optional:file:../infra/env/.env.development.local[.properties]
+
+  jackson:
+    time-zone: Asia/Seoul
+
+  jpa:
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: Asia/Seoul
+        format_sql: ${JPA_SHOW_SQL}
+        dialect: org.hibernate.dialect.MySQL8Dialect
+    hibernate:
+      ddl-auto: ${JPA_DDL_AUTO}
+    defer-datasource-initialization: true
+
+  sql:
+    init:
+      data-locations:
+        - classpath:sql/song.sql
+        - classpath:sql/band.sql
+        - classpath:sql/recruitment.sql
+
+      mode: ${SQL_INIT_MODE}
+
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST}:${MYSQL_PORT}/${MYSQL_DATABASE}?serverTimezone=UTC&useUniCode=yes&characterEncoding=UTF-8
+    username: ${MYSQL_ROOT_USERNAME}
+    password: ${MYSQL_ROOT_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      pool-name: hikari-pool
+      maximum-pool-size: 50
+      minimum-idle: 50
+      connection-timeout: 5000
+      connection-init-sql: "SELECT 1"
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      auto-commit: true
+
+  main:
+    allow-bean-definition-overriding: true
+
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
+
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 200MB
+      max-request-size: 200MB
+
+ai:
+  service:
+    url: ${SPRING_AI_SERVICE_URL}
+jwt:
+  secret-key: ${JWT_SECRET_KEY}
+  access-token:
+    expiretime: ${JWT_ACCESS_TOKEN_EXPIRE_TIME}
+
+minio:
+  endpoint: ${MINIO_ENDPOINT}
+  access-key: ${MINIO_USERNAME}
+  secret-key: ${MINIO_PASSWORD}
+  bucket: ${MINIO_BUCKET}
+
+rabbitmq:
+  audio-analysis-request-queue:
+    name: audio-analysis-request
+  audio-analysis-response-queue:
+    name: audio-analysis-response
+  audio-analysis-request-exchange:
+    name: audio-analysis-request-exchange
+  audio-analysis-response-exchange:
+    name: audio-analysis-response-exchange
+  audio-analysis-request:
+    routing:
+      key: audio.analysis.request
+  audio-analysis-response:
+    routing:
+      key: audio.analysis.response
+
+openvidu:
+  secret: ${OPENVIDU_SECRET}
+  url: https://${OPENVIDU_HOST}:${OPENVIDU_PORT}
+
+oauth2:
+  redirectUri: ${REDIRECT_URI}
+  frontRedirectUri: ${FRONT_REDIRECT_URI}

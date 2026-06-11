@@ -1,0 +1,105 @@
+@token = {{token}}
+@instrument = BASS
+@rankMatchingId = {{rankMatchingId}}
+@songByInstrumentPackId = 19
+@songByInstrumentId1 = 70
+
+### 1. 유저 회원 가입
+
+POST {{baseUrl}}/api/users
+Content-Type: application/json
+
+> {%
+    client.global.set("token", response.body.accessToken);
+    client.test("Validate", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+###
+GET http://localhost:8080/api/members/me/ranks
+Accept: application/json
+Authorization: Bearer {{token}}
+
+### 2. 유저 실버로 도전
+POST {{baseUrl}}/api/rank-matchings
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+# QWER 불꽃놀이
+
+{
+  "songInstrumentPackId": {{songByInstrumentPackId}},
+  "instrument": "{{instrument}}",
+  "rankType": "CHALLENGE",
+  "targetTier": "SILVER"
+}
+
+> {%
+    client.global.set("rankMatchingId", response.body.rankMatchingId);
+    client.test("Validate", function () {
+        client.assert(response.status === 201, "Response status is not 200");
+    });
+%}
+
+### 3. 유저 첫번째 곡 시도
+POST {{baseUrl}}/api/attempts
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "rankMatchingId": {{rankMatchingId}},
+  "songByInstrumentId": {{songByInstrumentId1}},
+  "recordUrl": "",
+  "gameType": "RANK"
+}
+
+> {%
+    client.global.set("attemptId", response.body.attemptId);
+    client.test("Validate", function () {
+        client.assert(response.status === 201, "Response status is not 201");
+    });
+%}
+
+### 4. 녹음 생성 (POST /api/records)
+POST {{baseUrl}}/api/records/me
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+Authorization: Bearer {{token}}
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="recordInfo"
+Content-Type: application/json
+
+{
+  "attemptId": {{attemptId}},
+  "dtype": "CHALLENGE",
+  "title": "테스트 녹음"
+}
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="audioFile"; filename="vocal.wav"
+Content-Type: audio/mpeg
+
+< ./vocal.wav
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+
+###
+GET http://localhost:8080/api/attempts/test?
+    attemptId=1&
+    score1={{$random.integer(100)}}&
+    score2={{$random.integer(100)}}&
+    score3={{$random.integer(100)}}
+
+###
+GET http://localhost:8080/api/attempts/test?
+    attemptId=1&
+    score1={{$random.integer(100)}}&
+    score2={{$random.integer(100)}}&
+    score3={{$random.integer(100)}}
+
+###
+GET http://localhost:8080/api/attempts/test?
+    attemptId=1&
+    score1={{$random.integer(100)}}&
+    score2={{$random.integer(100)}}&
+    score3={{$random.integer(100)}}

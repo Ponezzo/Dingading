@@ -1,0 +1,29 @@
+
+@memberId = bf9507c1-f83f-473d-8ec9-b15bc9271594
+@token = eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhY2Nlc3NUb2tlbiIsInVzZXJuYW1lIjoicWtyd25zZ2g3MXdAZ21haWwuY29tIiwiaWQiOiJiZjk1MDdjMS1mODNmLTQ3M2QtOGVjOS1iMTViYzkyNzE1OTQiLCJpYXQiOjE3NDMwNTIxMTIsImV4cCI6MTc0NDc1NzE0NH0.UD_OzVTwCmNErc-Va9qv7QR17RzphnNFcH-HVLwb1GA
+@instrument = DRUM
+
+### 랭크 조회
+GET {{baseUrl}}/api/members/{{memberId}}/ranks
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+> {%
+    client.test("Validate", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+### 악기 별 조회
+GET {{baseUrl}}/api/members/me/ranks/{{instrument}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+#     * GET /api/members/me/ranks : 내 악기별 랭크 정보 조회
+#     * 현재 로그인한 회원의 악기별 랭크 정보를 조회합니다.
+#     *
+#     *         or 인증되지 않은 요청입니다. (status code 401)
+GET {{baseUrl}}/api/members/me/ranks
+Content-Type: application/json
+Authorization: Bearer {{token}}

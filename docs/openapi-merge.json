@@ -1,0 +1,26 @@
+{
+  "inputs": [
+    {
+      "inputFile": "./member-api.yaml"
+    },
+    {
+      "inputFile": "./challenge-api.yaml"
+    },
+    {
+      "inputFile": "./record-api.yaml"
+    },
+    {
+      "inputFile": "./band-api.yaml"
+    },
+    {
+      "inputFile": "./chatroom-api.yaml"
+    },
+    {
+      "inputFile": "./recruitment-api.yaml"
+    },
+    {
+      "inputFile": "./livehouse-api.yaml"
+    }
+  ],
+  "output": "./output/openapi.yaml"
+}

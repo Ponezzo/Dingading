@@ -1,0 +1,119 @@
+.container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 100vh;
+  z-index: 1000;
+}
+
+.navbar {
+  /* border: 5px solid skyblue; */
+  background-color: #22252D;
+  position: fixed;
+  height: 100vh;
+  left: 0;
+  top: 0;
+  display: flex;
+  flex-direction: row;
+  /* align-items: center; */
+  /* width: 5rem; */
+  z-index: 1000;
+  /* position: relative; */
+}
+
+.right-nav {
+  /* border: 5px solid; */
+  display: flex;
+  /* left: 0; */
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  /* gap: 1rem; */
+}
+
+.navbar {
+  /* border: 5px solid skyblue; */
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding-top: 1rem;
+}
+
+.hamburger-button {
+  /* border: 5px solid red; */
+  width: 48px;
+  height: 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.navbar-container-small {
+  /* border: 5px solid brown; */
+  width: 5rem;
+  height: 100%;
+  display: flex;  
+  flex-direction: column;
+  align-items: center;
+  gap: 4rem;
+}
+
+.navbar-container-middle {
+  /* border: 5px solid springgreen; */
+  display: flex;
+  flex: 1;
+  flex-direction: row;
+  align-items: center;
+  /* width: 20rem; */
+}
+
+.columns {
+  /* border: 5px solid; */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* gap: 2rem; */
+}
+
+.image-3d {
+  display: flex;
+}
+
+.texts {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2rem;
+  padding: 2rem;
+  width: 100%;
+}
+
+.nav-text {
+  font-size: large;
+}
+
+.end-line {
+  background-color: white;
+  height: 40vh;
+  width: 0.3vw;
+  border-radius: 5px 0px 0px 5px;
+}
+
+.chevron-nav {
+  /* border: 5px solid; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 48px;
+  height: 48px;
+  margin-inline: 1rem;
+  margin-block: 1rem;
+}
+
+.chevron-nav img {
+  width: 48px !important;
+  height: 48px !important;
+  min-width: 48px !important;
+  min-height: 48px !important;
+}

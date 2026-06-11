@@ -1,0 +1,34 @@
+.songCarousel {
+  /* border: 5px solid red; */
+  display: flex;
+  flex: 1;
+}
+
+.carouselWrapper {
+  /* border: 5px solid blue; */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  gap: 2rem;
+}
+
+.song {
+  border-radius: 5px;
+  background-color: #22252D;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 2rem 1rem; 
+  gap: 1rem;
+  
+}
+
+.navigationButtons {
+  /* border: 5px solid ; */
+  padding: 1rem;
+  display: flex;
+}
+
