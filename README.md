@@ -5,11 +5,7 @@
 ## 🎬 시연 영상
 
 <p align="center">
-  <a href="https://github.com/Ponezzo/Dingading/releases/download/demo/demo.mp4">
-    <img src=".github/assets/demo.gif" alt="딩가딩 시연 영상 미리보기" width="900">
-  </a>
-  <br>
-  <sub><a href="https://github.com/Ponezzo/Dingading/releases/download/demo/demo.mp4">▶ 전체 영상 재생 (MP4)</a> · <a href="https://github.com/Ponezzo/Dingading/releases/tag/demo">Release</a></sub>
+  <video src="https://github.com/user-attachments/assets/415d64c5-54c7-4d49-924a-e779e8c9049b" controls playsinline width="900"></video>
 </p>
 
 ## 로컬 실행 (Docker 없음)
