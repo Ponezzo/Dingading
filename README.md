@@ -2,6 +2,14 @@
 
 > AI 음성 인식 기반의 연주 실력 측정 및 밴드 구인구직 플랫폼
 
+## 🎬 시연 영상
+
+<p align="center">
+  <video src="https://github.com/Ponezzo/Dingading/releases/download/demo/demo.mp4" controls playsinline width="900">
+    브라우저가 video 태그를 지원하지 않습니다. <a href="https://github.com/Ponezzo/Dingading/releases/tag/demo">Release에서 시청</a>
+  </video>
+</p>
+
 ## 로컬 실행 (Docker 없음)
 
 ### 1. 필수 프로그램 설치
