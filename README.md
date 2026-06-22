@@ -5,9 +5,11 @@
 ## 🎬 시연 영상
 
 <p align="center">
-  <video src="https://github.com/Ponezzo/Dingading/releases/download/demo/demo.mp4" controls playsinline width="900">
-    브라우저가 video 태그를 지원하지 않습니다. <a href="https://github.com/Ponezzo/Dingading/releases/tag/demo">Release에서 시청</a>
-  </video>
+  <a href="https://github.com/Ponezzo/Dingading/releases/download/demo/demo.mp4">
+    <img src=".github/assets/demo.gif" alt="딩가딩 시연 영상 미리보기" width="900">
+  </a>
+  <br>
+  <sub><a href="https://github.com/Ponezzo/Dingading/releases/download/demo/demo.mp4">▶ 전체 영상 재생 (MP4)</a> · <a href="https://github.com/Ponezzo/Dingading/releases/tag/demo">Release</a></sub>
 </p>
 
 ## 로컬 실행 (Docker 없음)
