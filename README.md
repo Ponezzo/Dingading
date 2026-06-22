@@ -2,7 +2,7 @@
 
 > AI 음성 인식 기반의 연주 실력 측정 및 밴드 구인구직 플랫폼
 
-## 🎬 시연 영상
+## 🎬 홍보 영상
 
 <p align="center">
   <video src="https://github.com/user-attachments/assets/415d64c5-54c7-4d49-924a-e779e8c9049b" controls playsinline width="900"></video>
